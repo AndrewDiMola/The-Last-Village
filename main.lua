@@ -127,8 +127,11 @@ function loadGameSettings()
   Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
   Dialogue = false
   
-  GameWidth = love.graphics.getWidth()
-  GameHeight = love.graphics.getHeight()
+  GameWidthMin = 0
+  GameWidthMax = love.graphics.getWidth()
+  
+  GameHeightMin = 0
+  GameHeightMax = love.graphics.getHeight()
   
   Timer = 0 -- Used for NPC movement
     
@@ -475,7 +478,7 @@ function drawDialogue(villager)
   local textLineWidth = Font:getWidth(villagerMessage)
   local textLineHeight = 19
   
-  if textLineWidth + rectangleX > GameWidth then
+  if textLineWidth + rectangleX > GameWidthMax then
     rectangleX = rectangleX - (textLineWidth + VillagerImage:getWidth()) - 3
   end 
   
@@ -515,7 +518,7 @@ function updateCharacter()
     return 'touch'
   end
 
-  if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) then
+  if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) and Character.y > GameHeightMin then
   
     if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
 	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
@@ -524,7 +527,7 @@ function updateCharacter()
 	if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	
   end
   
-  if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) then
+  if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) and (Character.y + CharacterImage:getHeight()) < GameHeightMax then
 
     if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
 	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
@@ -533,7 +536,7 @@ function updateCharacter()
     if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
   end
 
-  if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) then
+  if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) and Character.x > GameWidthMin then
   
 	if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
 	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
@@ -542,7 +545,7 @@ function updateCharacter()
 	if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
   end
 
-  if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) then
+  if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) and (Character.x + CharacterImage:getWidth()) < GameWidthMax then
     
 	if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
 	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
@@ -576,9 +579,15 @@ function updateOutsideVillagers()
   if Timer > 2 then -- Every 2 seconds a villager moves in a random direction
 	local villager1 = OutsideVillagers[1]
 	local villager2 = OutsideVillagers[2]
-
+    
+	if villager1.x < (GameWidthMin + (VillagerImage:getWidth()) - 5) and villager1Direction == -1 then
+	  villager1Direction = 1  
+	end  
+	
 	villager1.x, villager1.y = VillageWorld:move(villager1, villager1.x + villagerSpeed * villager1Direction, villager1.y)
+	
 	villager2.x, villager2.y = VillageWorld:move(villager2, villager2.x, villager2.y + villagerSpeed * villager2Direction)
+	
 	Timer = 0 
   end
 end
