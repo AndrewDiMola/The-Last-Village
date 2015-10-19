@@ -4,7 +4,9 @@ function love.load()
   
   Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
   Timer = 0 -- Used for NPC movement
-  
+    
+  Font = love.graphics.setNewFont("fonts/verdanab.ttf", 14)	
+
   loadBumpWorlds() -- Bump is used for collision detection
   loadImages()
   loadTileset()
@@ -23,6 +25,7 @@ function love.draw()
     
     if Village then
 	  drawVillage() 
+	  drawDialogue()
 	end  
 	
 	if Inn then
@@ -46,7 +49,7 @@ function love.draw()
 	
 	-- Reset the volume outside the Main Menu
 	TownTheme:setVolume(1)
-
+	
   else -- Inside the Main Menu
     
 	drawMainMenu()
@@ -200,25 +203,25 @@ end
 
 function loadCharacter()
 
-  Character = {x = 384, y = 560, sx, sy} -- current and starting position
+  Character = {x = 386, y = 560, sx, sy} -- current and starting position
   Character.sx, Character.sy = Character.x, Character.y
 end
 
 function loadVillage()
 
   -- NPCs: Outside
-  local villager1 = {x = 50, y = 250}
-  local villager2 = {x = 450, y = 85}
-  local villager3 = {x = 540, y = 475}
+  local villager1 = {x = 50, y = 250, m = "Hooligan! Leave me to my pacing!!!"}
+  local villager2 = {x = 440, y = 85, m = "The moon hasn't looked the same lately..."}
+  local villager3 = {x = 540, y = 475, m = "Welcome to The Last Village"}
   OutsideVillagers = {villager1, villager2, villager3}
    
   -- NPCs: Inn
-  local villager4 = {x = 512, y = 512}
+  local villager4 = {x = 512, y = 512, m = "50G for the night? Why? Just sleep at home..."}
   InnVillagers = {villager4}
   
   -- NPCS: Armory
-  local villager5 = {x = 162, y = 228}
-  local villager6 = {x = 610, y = 228}
+  local villager5 = {x = 162, y = 228, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?"}
+  local villager6 = {x = 610, y = 228, m = "Damnit. Why do I have to stand here. We haven't sold anything in years!"}
   ArmoryVillagers = {villager5, villager6}
   
   -- Clouds: Outside
@@ -297,45 +300,45 @@ function loadVillage()
   
   HomeTable = {
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 2,34,34,34,34,34,34,34,34,34,34,34,34 }
   }
 
   ResidenceTable = {
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 2,34,34,34,34,34,34,34,34,34,34,34,34 }
   }  
    
@@ -346,99 +349,45 @@ function loadBumpItems()
   -- Character
   VillageWorld:add(Character, Character.x, Character.y, CharacterImage:getWidth(), CharacterImage:getHeight())
   
-  -- Village
-  for key, villager in pairs(OutsideVillagers) do
-    VillageWorld:add(villager, villager.x, villager.y, VillagerImage:getWidth(), VillagerImage:getHeight())
-  end
+  -- Locations / Villagers
+  loadNPCS(OutsideVillagers, VillageWorld)
+  loadTiledMap(VillageTable, VillageWorld)
+
+  loadNPCS(InnVillagers, InnWorld)
+  loadTiledMap(InnTable, InnWorld)
+  
+  loadNPCS(ArmoryVillagers, ArmoryWorld)
+  loadTiledMap(ArmoryTable, ArmoryWorld)
+  
+  loadTiledMap(HomeTable, HomeWorld)
+  
+  loadTiledMap(ResidenceTable, ResidenceWorld)
+
+end
+
+function loadTiledMap(location, world)
   
   local uId = 0
   
-  for rowIndex = 1, #VillageTable do
-    local row = VillageTable[rowIndex]
+  for rowIndex = 1, #location do
+    local row = location[rowIndex]
 	
     for columnIndex = 1, #row do
       local number = row[columnIndex]
 	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
+	  
+	  if BumpTiles[number] == "s" then
+        world:add(uId, x, y, Tileset.x, Tileset.y)
+	    uId = uId + 1
+      end
+	end
+  end
+end
 
-	  if BumpTiles[number] == "s" then
-        VillageWorld:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
-      end
-	end
-  end
+function loadNPCS(villagers, world)
   
-  -- Inn
-  for key, villager in pairs(InnVillagers) do
-    InnWorld:add(villager, villager.x, villager.y, VillagerImage:getWidth(), VillagerImage:getHeight())
-  end
-  
-  uId = 0
-  
-  for rowIndex = 1, #InnTable do
-    local row = InnTable[rowIndex]
-	
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
-	  
-	  if BumpTiles[number] == "s" then
-        InnWorld:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
-      end
-	end
-  end
-  
-  -- Armory
-  for key, villager in pairs(ArmoryVillagers) do
-    ArmoryWorld:add(villager, villager.x, villager.y, VillagerImage:getWidth(), VillagerImage:getHeight())
-  end
-  
-  uId = 0
-  
-  for rowIndex = 1, #ArmoryTable do
-    local row = ArmoryTable[rowIndex]
-	
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
-	  
-	  if BumpTiles[number] == "s" then
-        ArmoryWorld:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
-      end
-	end
-  end
-  
-  uId = 0
-  
-  for rowIndex = 1, #HomeTable do
-    local row = HomeTable[rowIndex]
-	
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
-	  
-	  if BumpTiles[number] == "s" then
-        HomeWorld:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
-      end
-	end
-  end
-  
-  uId = 0
-  
-  for rowIndex = 1, #ResidenceTable do
-    local row = ResidenceTable[rowIndex]
-	
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
-	  
-	  if BumpTiles[number] == "s" then
-        ResidenceWorld:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
-      end
-	end
+  for key, villager in pairs(villagers) do
+    world:add(villager, villager.x, villager.y, VillagerImage:getWidth(), VillagerImage:getHeight())
   end
 end
 
@@ -449,95 +398,89 @@ end
 function drawVillage()
   
   -- Draw the Village tiles
-  for rowIndex = 1, #VillageTable do
-    local row = VillageTable[rowIndex]
-    
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y)
-    end
-  end
+  drawTiledMap(VillageTable)
     
   --  Draw the Villagers
-  for key, villager in pairs(OutsideVillagers) do
-    love.graphics.draw(VillagerImage, villager.x, villager.y)
-  end  
+  drawObjects(OutsideVillagers, VillagerImage)
     
   --  Draw the Clouds
-  for key, cloud in pairs(Clouds) do
-    love.graphics.draw(CloudImage, cloud.x, cloud.y)
-  end  
+  drawObjects(Clouds, CloudImage)
 end
 
 function drawInn()
 
-  -- Draw the Inn tiles  
-  for rowIndex = 1, #InnTable do
-    local row = InnTable[rowIndex]
-  
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1) * Tileset.x, (rowIndex - 1) * Tileset.y)
-    end	
-  end
+  -- Draw the Inn tiles 
+  drawTiledMap(InnTable)  
   
   -- Draw the Villagers
-  for key, villager in pairs(InnVillagers) do
-    love.graphics.draw(VillagerImage, villager.x, villager.y)
-  end
+  drawObjects(InnVillagers, VillagerImage)
 end
 
 function drawArmory()
   
-  -- Draw the Armory tiles  
-  for rowIndex = 1, #ArmoryTable do
-    local row = ArmoryTable[rowIndex]
-  
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1) * Tileset.x, (rowIndex - 1) * Tileset.y)
-    end	
-  end
+  -- Draw the Armory tiles 
+  drawTiledMap(ArmoryTable)  
   
   -- Draw the Villagers
-  for key, villager in pairs(ArmoryVillagers) do
-    love.graphics.draw(VillagerImage, villager.x, villager.y)
-  end  
+  drawObjects(ArmoryVillagers, VillagerImage)
 end
 
 function drawHome()
   
-  -- Draw the Home tiles  
-  for rowIndex = 1, #HomeTable do
-    local row = HomeTable[rowIndex]
-  
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1) * Tileset.x, (rowIndex - 1) * Tileset.y)
-    end	
-  end
+  -- Draw the Home tiles 
+  drawTiledMap(HomeTable)  
 end
 
 function drawResidence()
   
   -- Draw the Residence tiles  
-  for rowIndex = 1, #ResidenceTable do
-    local row = ResidenceTable[rowIndex]
-  
-    for columnIndex = 1, #row do
-      local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1) * Tileset.x, (rowIndex - 1) * Tileset.y)
-    end	
-  end
+  drawTiledMap(ResidenceTable)  
 end
 
 function drawMainMenu()
   
-  love.graphics.setBackgroundColor(0, 0, 0)
   love.graphics.setNewFont(50)
   love.graphics.print("Main Menu", 265, 100)
+  love.graphics.setNewFont("fonts/verdanab.ttf", 14) -- Revert to game font
 end
 
+function drawDialogue()
+  
+  local villager1 = OutsideVillagers[1]
+  local villager2 = OutsideVillagers[2]
+  local villager3 = OutsideVillagers[3]
+
+  love.graphics.setColor(0,0,0)
+  
+  love.graphics.rectangle("fill", villager1.x + 30, villager1.y - 19, Font:getWidth(villager1.m), 18)
+  love.graphics.rectangle("fill", villager2.x + 30, villager2.y - 19, Font:getWidth(villager2.m), 18)
+  love.graphics.rectangle("fill", villager3.x + 30, villager3.y - 19, Font:getWidth(villager3.m), 18)
+  
+  love.graphics.setColor(255,255,255)
+
+  love.graphics.print(villager1.m, villager1.x + 30, villager1.y - 19)
+  love.graphics.print(villager2.m, villager2.x + 30, villager2.y - 19)
+  love.graphics.print(villager3.m, villager3.x + 30, villager3.y - 19)
+end  
+
+function drawTiledMap(location)
+  
+  for rowIndex = 1, #location do
+    local row = location[rowIndex]
+    
+    for columnIndex = 1, #row do
+      local number = row[columnIndex]
+      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y)
+    end
+  end  
+end  
+
+function drawObjects(objects, image)
+  
+  for key, value in pairs(objects) do
+    love.graphics.draw(image, value.x, value.y)
+  end    
+end  
 ------------------------
 ---- Love.update() -----
 ------------------------
@@ -545,95 +488,39 @@ end
 function updateCharacter()
 
   if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) then
-
-    if Village then
-      Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y - 5)
-    end
-
-	if Inn then
-	  Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y - 5)
-	end
-	
-	if Armory then
-	  Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y - 5)
-	end
-	
-	if Home then
-	  Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y - 5)
-	end
-
-	if Residence then
-	  Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y - 5)
-	end	
+  
+    if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y - 5) end
+	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y - 5) end
+	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y - 5) end
+	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y - 5) end
+	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y - 5) end	
   end
   
   if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) then
 
-    if Village then
-	  Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y + 5)
-    end
-
-	if Inn then
-	  Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y + 5)
-    end
-	
-    if Armory then
-	  Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y + 5)
-    end
-
-	if Home then
-	  Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y + 5)
-    end
-
-    if Residence then
-	  Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y + 5)
-    end
+    if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y + 5) end
+	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y + 5) end
+    if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y + 5) end
+	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y + 5)end
+    if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y + 5) end
   end
 
   if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) then
   
-	if Village then
-	  Character.x, Character.y = VillageWorld:move(Character, Character.x - 5, Character.y)
-    end
-
-	if Inn then
-	  Character.x, Character.y = InnWorld:move(Character, Character.x - 5, Character.y)
-    end
-	
-	if Armory then
-	  Character.x, Character.y = ArmoryWorld:move(Character, Character.x - 5, Character.y)
-    end
-
-	if Home then
-	  Character.x, Character.y = HomeWorld:move(Character, Character.x - 5, Character.y)
-    end
-
-	if Residence then
-	  Character.x, Character.y = ResidenceWorld:move(Character, Character.x - 5, Character.y)
-    end
+	if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x - 5, Character.y) end
+	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x - 5, Character.y) end
+	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x - 5, Character.y) end
+	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x - 5, Character.y) end
+	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x - 5, Character.y) end
   end
 
   if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) then
     
-	if Village then
-	  Character.x, Character.y = VillageWorld:move(Character, Character.x + 5, Character.y)
-    end
-	  
-	if Inn then
-	  Character.x, Character.y = InnWorld:move(Character, Character.x + 5, Character.y)
-    end
-	
-	if Armory then
-	  Character.x, Character.y = ArmoryWorld:move(Character, Character.x + 5, Character.y)
-    end
-	  
-	if Home then
-	  Character.x, Character.y = HomeWorld:move(Character, Character.x + 5, Character.y)
-    end
-
-	if Residence then
-	  Character.x, Character.y = ResidenceWorld:move(Character, Character.x + 5, Character.y)
-    end
+	if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x + 5, Character.y) end
+	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x + 5, Character.y) end
+	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x + 5, Character.y) end
+	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x + 5, Character.y) end
+	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x + 5, Character.y) end
   end  
 end
 
@@ -765,4 +652,5 @@ function updateBumpWorlds()
   if Residence then
 	ResidenceWorld:update(Character, Character.x, Character.y)
   end  
+
 end
