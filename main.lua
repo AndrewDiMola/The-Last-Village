@@ -127,11 +127,11 @@ function loadGameSettings()
   Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
   Dialogue = false
   
-  GameWidthMin = 0
-  GameWidthMax = love.graphics.getWidth()
+  GameWidthMin = 1
+  GameWidthMax = love.graphics.getWidth() - 1
   
-  GameHeightMin = 0
-  GameHeightMax = love.graphics.getHeight()
+  GameHeightMin = 1
+  GameHeightMax = love.graphics.getHeight() - 1
   
   Timer = 0 -- Used for NPC movement
     
@@ -199,7 +199,13 @@ function loadTileset()
     {0, 96, "t"},   -- 31 = road-bottom-left
     {32, 96, "t"},  -- 32 = road-bottom-right
     {64, 96, "t"},  -- 33 = grass-top
-	{96, 96, "s"}   -- 34 = wall (black)
+	{96, 96, "s"},  -- 34 = wall (black)
+	{128, 96, "t"}, -- 35 = sunflower-center
+	{160, 96, "t"}, -- 36 = sunflower-right
+	{192, 96, "t"}, -- 37 = sunflower-left
+    {224, 96, "t"}, -- 38 = wildflower-center
+	{256, 96, "t"}, -- 39 = wildflower-right
+	{288, 96, "t"}  -- 40 = wildflower-left
   }
   
   Tiles = {}
@@ -232,7 +238,7 @@ function loadVillage()
   -- NPCs: Outside
   local villager1 = {x = 50, y = 250, m = "Hooligan! Leave me to my pacing!!!", isVillager = true}
   local villager2 = {x = 440, y = 85, m = "The moon hasn't looked the same lately...", isVillager = true}
-  local villager3 = {x = 540, y = 475, m = "Welcome to The Last Village", isVillager = true}
+  local villager3 = {x = 540, y = 375, m = "Welcome to The Last Village", isVillager = true}
   OutsideVillagers = {villager1, villager2, villager3}
    
   -- NPCs: Inn
@@ -270,11 +276,11 @@ function loadVillage()
     { 1, 1, 1, 1,24, 1, 1, 1, 1, 1,33,33,24,33,33, 1, 1, 1, 1, 1,24, 1, 1, 1, 1 },
     { 1, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1, 1 },
     { 1, 1, 1, 1,31,23,23,23,26,23,23,23, 3,23,23,23,23,23,23,23,27, 1,15,11,17 },
-    { 1, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,24, 1,13, 2,14 },
-    {23,23,23,23,23,23,23,23,32, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,24, 1,13,20,14 },
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,24, 1,16, 5,18 },
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1,31,23,23,28,23 },
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,24, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } 
+    { 1, 1, 1, 1, 1, 1, 1, 1,24,36,35,37,24,39,38,38,38,38,38,40,24, 1,13, 2,14 },
+    {23,23,23,23,23,23,23,23,32,36,35,37,24,39,38,38,38,38,38,40,24, 1,13,20,14 },
+    {36,35,35,35,35,35,35,35,35,35,35,37,24,39,38,38,38,38,38,40,24, 1,16, 5,18 },
+    {36,35,35,35,35,35,35,35,35,35,35,37,24,39,38,38,38,38,38,40,31,23,23,28,23 },
+    {36,35,35,35,35,35,35,35,35,35,35,37,24,39,38,38,38,38,38,38,38,38,38,38,40 } 
   }   
   
   InnTable = {
