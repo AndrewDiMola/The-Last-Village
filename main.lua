@@ -2,10 +2,7 @@
 
 function love.load()
   
-  Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
-  Timer = 0 -- Used for NPC movement
-    
-  Font = love.graphics.setNewFont("fonts/verdanab.ttf", 14)	
+  loadGameSettings()
 
   loadBumpWorlds() -- Bump is used for collision detection
   loadImages()
@@ -24,8 +21,7 @@ function love.draw()
   if not Menu then
     
     if Village then
-	  drawVillage() 
-	  drawDialogue()
+	  drawVillage()	  
 	end  
 	
 	if Inn then
@@ -43,6 +39,10 @@ function love.draw()
     if Residence then
       drawResidence()
     end
+	
+	if Dialogue then
+	  drawDialogue(CollidedVillager)
+	end
 	
 	-- Always draw the Character	 
 	love.graphics.draw(CharacterImage, Character.x, Character.y)	 
@@ -71,26 +71,31 @@ function love.update(dt)
   -- Door outside of the Inn
   if Village and (Character.x > 380 and Character.x < 390) and (Character.y > 320 and Character.y < 330) then
 	updateInn()
+	Dialogue = false
   end
   
   -- Door outside of the Armory
   if Village and (Character.x > 123 and Character.x < 133) and (Character.y > 128 and Character.y < 138) then
 	updateArmory()
+	Dialogue = false
   end
 
   -- Door outside of the Home
   if Village and (Character.x > 636 and Character.x < 646) and (Character.y > 128 and Character.y < 138) then
 	updateHome()
+	Dialogue = false
   end
 
   -- Door outside of the Residence
   if Village and (Character.x > 732 and Character.x < 742) and (Character.y > 512 and Character.y < 522) then
 	updateResidence()
+	Dialogue = false
   end  
 	
   -- Door inside building
   if not Village and (Character.x > 380 and Character.x < 390) and (Character.y > 560 and Character.y < 570) then
     updateFromBuilding()
+	Dialogue = false
   end
 	
 end
@@ -117,6 +122,18 @@ end
 ------------------------
 ---- Love.load() -------
 ------------------------
+function loadGameSettings()
+
+  Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
+  Dialogue = false
+  
+  GameWidth = love.graphics.getWidth()
+  GameHeight = love.graphics.getHeight()
+  
+  Timer = 0 -- Used for NPC movement
+    
+  Font = love.graphics.setNewFont("fonts/verdanab.ttf", 14)	
+end
 
 function loadBumpWorlds()
 
@@ -210,19 +227,22 @@ end
 function loadVillage()
 
   -- NPCs: Outside
-  local villager1 = {x = 50, y = 250, m = "Hooligan! Leave me to my pacing!!!"}
-  local villager2 = {x = 440, y = 85, m = "The moon hasn't looked the same lately..."}
-  local villager3 = {x = 540, y = 475, m = "Welcome to The Last Village"}
+  local villager1 = {x = 50, y = 250, m = "Hooligan! Leave me to my pacing!!!", isVillager = true}
+  local villager2 = {x = 440, y = 85, m = "The moon hasn't looked the same lately...", isVillager = true}
+  local villager3 = {x = 540, y = 475, m = "Welcome to The Last Village", isVillager = true}
   OutsideVillagers = {villager1, villager2, villager3}
    
   -- NPCs: Inn
-  local villager4 = {x = 512, y = 512, m = "50G for the night? Why? Just sleep at home..."}
+  local villager4 = {x = 514, y = 514, m = "50G for the night? Why?", isVillager = true}
   InnVillagers = {villager4}
   
   -- NPCS: Armory
-  local villager5 = {x = 162, y = 228, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?"}
-  local villager6 = {x = 610, y = 228, m = "Damnit. Why do I have to stand here. We haven't sold anything in years!"}
+  local villager5 = {x = 162, y = 227, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?", isVillager = true}
+  local villager6 = {x = 610, y = 227, m = "Damnit. Why do I have to stand here. We haven't sold anything in years!", isVillager = true}
   ArmoryVillagers = {villager5, villager6}
+  
+  -- Villager you're speaking with
+  CollidedVillager = {}
   
   -- Clouds: Outside
   local cloud1 = {x = -25, y = 15}
@@ -271,7 +291,7 @@ function loadVillage()
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34,34,34,34,34,34,34,34,34 },
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 2,34,34,34,34,34,34,34,34,34,34,34,34 } 
   }
@@ -285,7 +305,7 @@ function loadVillage()
     {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
 	{34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },	
-    {34,34,34,34,34,34,34,34,34,34, 2, 2, 2, 2, 2,34,34,34,34,34,34,34,34,34,34 },
+    {34,34,34,34,34, 2,34,34,34,34, 2, 2, 2, 2, 2,34,34,34,34, 2,34,34,34,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
@@ -367,8 +387,8 @@ end
 
 function loadTiledMap(location, world)
   
-  local uId = 0
-  
+  local uID = 0
+
   for rowIndex = 1, #location do
     local row = location[rowIndex]
 	
@@ -377,8 +397,8 @@ function loadTiledMap(location, world)
 	  local x, y = (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y
 	  
 	  if BumpTiles[number] == "s" then
-        world:add(uId, x, y, Tileset.x, Tileset.y)
-	    uId = uId + 1
+        world:add(uID, x, y, Tileset.x, Tileset.y)
+	    uID = uID + 1
       end
 	end
   end
@@ -444,23 +464,25 @@ function drawMainMenu()
   love.graphics.setNewFont("fonts/verdanab.ttf", 14) -- Revert to game font
 end
 
-function drawDialogue()
+function drawDialogue(villager)
+ 
+  local villagerMessage = villager.m
+ 
+  local rectangleX = villager.x + 30
+  local rectangleY = villager.y - 19
+  local rectangleLineHeight = 18
   
-  local villager1 = OutsideVillagers[1]
-  local villager2 = OutsideVillagers[2]
-  local villager3 = OutsideVillagers[3]
-
-  love.graphics.setColor(0,0,0)
+  local textLineWidth = Font:getWidth(villagerMessage)
+  local textLineHeight = 19
   
-  love.graphics.rectangle("fill", villager1.x + 30, villager1.y - 19, Font:getWidth(villager1.m), 18)
-  love.graphics.rectangle("fill", villager2.x + 30, villager2.y - 19, Font:getWidth(villager2.m), 18)
-  love.graphics.rectangle("fill", villager3.x + 30, villager3.y - 19, Font:getWidth(villager3.m), 18)
+  if textLineWidth + rectangleX > GameWidth then
+    rectangleX = rectangleX - (textLineWidth + VillagerImage:getWidth()) - 3
+  end 
   
-  love.graphics.setColor(255,255,255)
-
-  love.graphics.print(villager1.m, villager1.x + 30, villager1.y - 19)
-  love.graphics.print(villager2.m, villager2.x + 30, villager2.y - 19)
-  love.graphics.print(villager3.m, villager3.x + 30, villager3.y - 19)
+  love.graphics.setColor(0,0,0) -- Black background
+  love.graphics.rectangle("fill", rectangleX, rectangleY, textLineWidth, rectangleLineHeight) -- Rectangle behind dialogue
+  love.graphics.setColor(255,255,255) -- Reset background
+  love.graphics.print(villagerMessage, rectangleX, rectangleY) -- Draw dialogue
 end  
 
 function drawTiledMap(location)
@@ -487,41 +509,60 @@ end
 
 function updateCharacter()
 
+  local numCollisions = 0
+
+  local playerFilter = function(item, other)
+    return 'touch'
+  end
+
   if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) then
   
-    if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y - 5) end
-	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y - 5) end
-	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y - 5) end
-	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y - 5) end
-	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y - 5) end	
+    if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+	if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+	if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+	if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	
   end
   
   if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) then
 
-    if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x, Character.y + 5) end
-	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x, Character.y + 5) end
-    if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x, Character.y + 5) end
-	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x, Character.y + 5)end
-    if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x, Character.y + 5) end
+    if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+    if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+	if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y + 5, playerFilter)end
+    if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
   end
 
   if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) then
   
-	if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x - 5, Character.y) end
-	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x - 5, Character.y) end
-	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x - 5, Character.y) end
-	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x - 5, Character.y) end
-	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x - 5, Character.y) end
+	if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+	if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+	if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+	if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
   end
 
   if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) then
     
-	if Village then Character.x, Character.y = VillageWorld:move(Character, Character.x + 5, Character.y) end
-	if Inn then Character.x, Character.y = InnWorld:move(Character, Character.x + 5, Character.y) end
-	if Armory then Character.x, Character.y = ArmoryWorld:move(Character, Character.x + 5, Character.y) end
-	if Home then Character.x, Character.y = HomeWorld:move(Character, Character.x + 5, Character.y) end
-	if Residence then Character.x, Character.y = ResidenceWorld:move(Character, Character.x + 5, Character.y) end
+	if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+	if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+	if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+	if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+	if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
   end  
+  
+  
+  for i = 1, numCollisions do
+    local other = colissions[i].other
+	  
+    if tonumber(other) == nil then -- background tiles are represented by numbers (which we are avoiding)
+      if other.isVillager then
+	    Dialogue = true
+	    CollidedVillager = other
+  	  end
+    end 
+  end
+  
 end
 
 function updateOutsideVillagers()
