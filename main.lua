@@ -170,7 +170,7 @@ function loadTileset()
     {0, 32, "t"},   -- 3 = road
     {32, 32, "s"},  -- 4 = sky
     {64, 0, "t"},   -- 5 = door (black)
-    {64, 32, "t"},  -- 6 = carpet (red)
+    {64, 32, "t"},  -- 6 = carpet (orange)
     {96, 0, "s"},   -- 7 = inn sign 
     {96, 32, "s"},  -- 8 = white (bed pillow)
     {128, 0, "s"},  -- 9 = sword sign 
@@ -204,7 +204,13 @@ function loadTileset()
     {192, 96, "t"}, -- 37 = sunflower-left
     {224, 96, "t"}, -- 38 = wildflower-center
     {256, 96, "t"}, -- 39 = wildflower-right
-    {288, 96, "t"}  -- 40 = wildflower-left
+    {288, 96, "t"}, -- 40 = wildflower-left
+    {0, 128, "t"},  -- 41 = stairs
+    {32, 128, "t"},  -- 42 = carpet-left
+    {64, 128, "t"},  -- 43 = carpet-top
+    {96, 128, "t"},  -- 44 = carpet-left
+    {128, 128, "t"},  -- 45 = carpet-top-left
+    {160, 128, "t"}   -- 46 = carpet-top-right
   }
 
   Tiles = {}
@@ -242,7 +248,8 @@ function loadVillage()
   
   -- NPCs: Inn
   local villager4 = {x = 514, y = 514, m = "50G for the night? Why?", isVillager = true}
-  InnVillagers = {villager4}
+  local villager5 = {x = 674, y = 68, m = "Members only. Beat it.", isVillager = true}
+  InnVillagers = {villager4, villager5}
   
   -- NPCS: Armory
   local villager5 = {x = 162, y = 227, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?", isVillager = true}
@@ -284,8 +291,8 @@ function loadVillage()
   
   InnTable = {
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34,41,34,34,34 },
+    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34, 2,34,34,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
@@ -299,8 +306,8 @@ function loadVillage()
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34,34,34,34,34,34,34,34,34 },
     {34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 6, 6, 6, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
+    {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2,42, 6,44, 2,34, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 6,34,34,34,34,34,34,34,34,34,34,34,34 } 
   }
   
@@ -321,8 +328,8 @@ function loadVillage()
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,42, 6,44, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 6,34,34,34,34,34,34,34,34,34,34,34,34 }
   }
   
@@ -343,8 +350,8 @@ function loadVillage()
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,42, 6,44, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 6,34,34,34,34,34,34,34,34,34,34,34,34 }
   }
   
@@ -365,8 +372,8 @@ function loadVillage()
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,42, 6,44, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 6,34,34,34,34,34,34,34,34,34,34,34,34 }
   }  
 
@@ -479,17 +486,22 @@ function drawDialogue(villager)
   local rectangleY = villager.y - 19
   local rectangleLineHeight = 18
 
-  local textLineWidth = Font:getWidth(villagerMessage)
+  local textLineWidth = Font:getWidth(villagerMessage) + 10
   local textLineHeight = 19
 
   if textLineWidth + rectangleX > GameWidthMax then
     rectangleX = rectangleX - (textLineWidth + VillagerImage:getWidth()) - 3
   end 
 
+  
+  love.graphics.setColor(255,255,255) -- White border
+  love.graphics.rectangle("line", rectangleX, rectangleY, textLineWidth, rectangleLineHeight) -- Rectangle behind dialog
+  
   love.graphics.setColor(0,0,0) -- Black background
-  love.graphics.rectangle("fill", rectangleX, rectangleY, textLineWidth, rectangleLineHeight) -- Rectangle behind dialogue
-  love.graphics.setColor(255,255,255) -- Reset background
-  love.graphics.print(villagerMessage, rectangleX, rectangleY) -- Draw dialogue
+  love.graphics.rectangle("fill", rectangleX, rectangleY, textLineWidth, rectangleLineHeight)
+  
+  love.graphics.setColor(255,255,255) -- White text
+  love.graphics.print(villagerMessage, rectangleX + 5, rectangleY) -- Draw dialog
 end  
 
 function drawTiledMap(location)
