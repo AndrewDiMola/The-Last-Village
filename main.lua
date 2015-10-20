@@ -63,8 +63,15 @@ function love.update(dt)
   Timer = Timer + dt -- Used in NPC movement
   
   updateCharacter()	
-  updateOutsideVillagers()
-  updateClouds(dt)
+  
+  if Inn then
+    updateInnVillagers()
+  end
+
+  if Village then
+    updateOutsideVillagers()
+    updateClouds(dt)
+  end
   
   updateBumpWorlds()
 
@@ -126,6 +133,8 @@ function loadGameSettings()
   Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
   Dialogue = false
 
+  Direction = 1
+
   GameWidthMin = 1
   GameWidthMax = love.graphics.getWidth() - 1
 
@@ -165,52 +174,53 @@ function loadTileset()
   
   -- Tiles
   QuadInfo = {
-    {0, 0, "t"},    -- 1 = grass
-    {32, 0, "t"},   -- 2 = house / floor
-    {0, 32, "t"},   -- 3 = road
-    {32, 32, "s"},  -- 4 = sky
-    {64, 0, "t"},   -- 5 = door (black)
-    {64, 32, "t"},  -- 6 = carpet (orange)
-    {96, 0, "s"},   -- 7 = inn sign 
-    {96, 32, "s"},  -- 8 = white (bed pillow)
-    {128, 0, "s"},  -- 9 = sword sign 
-    {128, 32, "s"}, -- 10 = shield sign
-    {160, 0, "s"},  -- 11 = house-top
-    {160, 32, "s"}, -- 12 = house-bottom
-    {192, 0, "s"},  -- 13 = house-left
-    {192, 32, "s"}, -- 14 = house-right
-    {224, 0, "s"},  -- 15 = house-top-left
-    {224, 32, "s"}, -- 16 = house-bottom-left
-    {256, 0, "s"},  -- 17 = house-top-right
-    {256, 32, "s"}, -- 18 = house-bottom-right
-    {288, 0, "s"},  -- 19 = character-home sign
-    {288, 32, "s"}, -- 20 = villager-home sign
-    {0, 64, "s"},   -- 21 = bed-left
-    {32, 64, "s"},  -- 22 = bed-right
-    {64, 64, "t"},  -- 23 = road-horizontal
-    {96, 64, "t"},  -- 24 = road-vertical
-    {128, 64, "t"}, -- 25 = road-left
-    {160, 64, "t"}, -- 26 = road-top
-    {192, 64, "t"}, -- 27 = road-right
-    {224, 64, "t"}, -- 28 = road-bottom
-    {256, 64, "t"}, -- 29 = road-top-left
-    {288, 64, "t"}, -- 30 = road-top-right
-    {0, 96, "t"},   -- 31 = road-bottom-left
-    {32, 96, "t"},  -- 32 = road-bottom-right
-    {64, 96, "t"},  -- 33 = grass-top
-    {96, 96, "s"},  -- 34 = wall (black)
-    {128, 96, "t"}, -- 35 = sunflower-center
-    {160, 96, "t"}, -- 36 = sunflower-right
-    {192, 96, "t"}, -- 37 = sunflower-left
-    {224, 96, "t"}, -- 38 = wildflower-center
-    {256, 96, "t"}, -- 39 = wildflower-right
-    {288, 96, "t"}, -- 40 = wildflower-left
-    {0, 128, "t"},  -- 41 = stairs
-    {32, 128, "t"},  -- 42 = carpet-left
-    {64, 128, "t"},  -- 43 = carpet-top
-    {96, 128, "t"},  -- 44 = carpet-left
+    {0, 0, "t"},      -- 1 = grass
+    {32, 0, "t"},     -- 2 = house / floor
+    {0, 32, "t"},     -- 3 = road
+    {32, 32, "s"},    -- 4 = sky
+    {64, 0, "t"},     -- 5 = door (black)
+    {64, 32, "t"},    -- 6 = carpet (orange)
+    {96, 0, "s"},     -- 7 = inn sign 
+    {96, 32, "s"},    -- 8 = white (bed pillow)
+    {128, 0, "s"},    -- 9 = sword sign 
+    {128, 32, "s"},   -- 10 = shield sign
+    {160, 0, "s"},    -- 11 = house-top
+    {160, 32, "s"},   -- 12 = house-bottom
+    {192, 0, "s"},    -- 13 = house-left
+    {192, 32, "s"},   -- 14 = house-right
+    {224, 0, "s"},    -- 15 = house-top-left
+    {224, 32, "s"},   -- 16 = house-bottom-left
+    {256, 0, "s"},    -- 17 = house-top-right
+    {256, 32, "s"},   -- 18 = house-bottom-right
+    {288, 0, "s"},    -- 19 = character-home sign
+    {288, 32, "s"},   -- 20 = villager-home sign
+    {0, 64, "s"},     -- 21 = bed-left
+    {32, 64, "s"},    -- 22 = bed-right
+    {64, 64, "t"},    -- 23 = road-horizontal
+    {96, 64, "t"},    -- 24 = road-vertical
+    {128, 64, "t"},   -- 25 = road-left
+    {160, 64, "t"},   -- 26 = road-top
+    {192, 64, "t"},   -- 27 = road-right
+    {224, 64, "t"},   -- 28 = road-bottom
+    {256, 64, "t"},   -- 29 = road-top-left
+    {288, 64, "t"},   -- 30 = road-top-right
+    {0, 96, "t"},     -- 31 = road-bottom-left
+    {32, 96, "t"},    -- 32 = road-bottom-right
+    {64, 96, "t"},    -- 33 = grass-top
+    {96, 96, "s"},    -- 34 = wall (black)
+    {128, 96, "t"},   -- 35 = sunflower-center
+    {160, 96, "t"},   -- 36 = sunflower-right
+    {192, 96, "t"},   -- 37 = sunflower-left
+    {224, 96, "t"},   -- 38 = wildflower-center
+    {256, 96, "t"},   -- 39 = wildflower-right
+    {288, 96, "t"},   -- 40 = wildflower-left
+    {0, 128, "t"},    -- 41 = stairs
+    {32, 128, "t"},   -- 42 = carpet-left
+    {64, 128, "t"},   -- 43 = carpet-top
+    {96, 128, "t"},   -- 44 = carpet-left
     {128, 128, "t"},  -- 45 = carpet-top-left
-    {160, 128, "t"}   -- 46 = carpet-top-right
+    {160, 128, "t"},  -- 46 = carpet-top-right
+    {192, 128, "s"}   -- 47 = bookshelf
   }
 
   Tiles = {}
@@ -234,27 +244,45 @@ end
 
 function loadCharacter()
 
-  Character = {x = 386, y = 560, sx, sy} -- current and starting position
+  Character = {x = 386, y = 560, sx, sy, isCharacter = true} -- current and starting position
   Character.sx, Character.sy = Character.x, Character.y
 end
 
 function loadVillage()
 
   -- NPCs: Outside
-  local villager1 = {x = 50, y = 250, m = "Hooligan! Leave me to my pacing!!!", isVillager = true}
-  local villager2 = {x = 440, y = 85, m = "The moon hasn't looked the same lately...", isVillager = true}
-  local villager3 = {x = 540, y = 375, m = "Welcome to The Last Village", isVillager = true}
+  local villager1 = {x = 50, y = 250, sx, sy, m = "Hooligan! Leave me to my pacing!!!", isVillager = true}
+  villager1.sx, villager1.sy = villager1.x, villager1.y
+  local villager2 = {x = 440, y = 85, sx, sy, m = "The moon hasn't looked the same lately...", isVillager = true}
+  villager2.sx, villager2.sy = villager2.x, villager2.y
+  local villager3 = {x = 540, y = 375, sx, sy, m = "Welcome to The Last Village.", isVillager = true}
+  villager3.sx, villager3.sy = villager3.x, villager3.y
+
   OutsideVillagers = {villager1, villager2, villager3}
   
   -- NPCs: Inn
-  local villager4 = {x = 514, y = 514, m = "50G for the night? Why?", isVillager = true}
-  local villager5 = {x = 674, y = 68, m = "Members only. Beat it.", isVillager = true}
-  InnVillagers = {villager4, villager5}
+  local villager1 = {x = 514, y = 514, sx, sy, m = "50G for the night? Why?", isVillager = true}
+  villager1.sx, villager1.sy = villager1.x, villager1.y
+  local villager2 = {x = 674, y = 68, sx, sy, m = "Members only. Beat it.", isVillager = true}
+  villager2.sx, villager2.sy = villager2.x, villager2.y
+  local villager3 = {x = 400, y = 275, sx, sy, m = "RAWR! I'm a monster!!!", isVillager = true}
+  villager3.sx, villager3.sy = villager3.x, villager3.y
+  local villager4 = {x = 650, y = 275, sx, sy, m = "GIVE BACK THE PRINCESS!!!", isVillager = true}
+  villager4.sx, villager4.sy = villager4.x, villager4.y
+  local villager5 = {x = 525, y = 200, m = "I love them both...but sometimes I just want a break", isVillager = true}
+  villager5.sx, villager5.sy = villager5.x, villager5.y
+
+  InnVillagers = {villager1, villager2, villager3, villager4, villager5}
   
   -- NPCS: Armory
-  local villager5 = {x = 162, y = 227, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?", isVillager = true}
-  local villager6 = {x = 610, y = 227, m = "Damnit. Why do I have to stand here. We haven't sold anything in years!", isVillager = true}
-  ArmoryVillagers = {villager5, villager6}
+  local villager1 = {x = 194, y = 227, sx, sy, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?", isVillager = true}
+  villager1.sx, villager1.sy = villager1.x, villager1.s
+  local villager2 = {x = 578, y = 227, sx, sy, m = "DAMNIT. I hate standing here. We haven't sold anything in years!", isVillager = true}
+  villager2.sx, villager2.sy = villager2.x, villager2.s
+  local villager3 = {x = 388, y = 300, sx, sy, m = "The armory is a family heirloom. I'll never sell it.", isVillager = true}
+  villager3.sx, villager3.sy = villager3.x, villager3.s
+
+  ArmoryVillagers = {villager1, villager2, villager3}
   
   -- Villager you're speaking with
   CollidedVillager = {}
@@ -268,7 +296,7 @@ function loadVillage()
   
   -- Maps: 
   VillageTable = {
-  { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
+    { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
     { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
     {33,33,15,11,11,11,17,33,33,33,33,33,33,33,33,33,33,33,15,11,11,11,17,33,33 },
     { 1, 1,13, 9,12,10,14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,13, 2,19, 2,14, 1, 1 },
@@ -291,8 +319,8 @@ function loadVillage()
   
   InnTable = {
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
-    {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34,41,34,34,34 },
-    {34, 2, 2,21,22, 8, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34, 2,34,34,34 },
+    {34, 2, 2, 2, 2, 2, 2, 2,34,47,47,47,47,47,47,47,47,47,47,34,34,41,34,34,34 },
+    {34, 2, 2,21,22, 8, 2, 2,34,47,47,47,47,47,47,47,47,47,47,34,34, 2,34,34,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
     {34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34 },
@@ -315,20 +343,20 @@ function loadVillage()
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2,34,47,47,47,47,47,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2,34,47,47,47,47,47,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2,34, 2, 2, 2, 2, 2, 2, 2,34,34 },	
-    {34,34,34,34,34, 2,34,34,34,34, 2, 2, 2, 2, 2,34,34,34,34, 2,34,34,34,34,34 },
+    {34,34,34,34,34,34, 2,34,34,34, 2, 2, 2, 2, 2,34,34,34, 2,34,34,34,34,34,34 },
+    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,10, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,10, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
-    {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
+    {34,34, 2, 9, 2, 2, 2, 2, 2, 2, 2,45,43,46, 2, 2, 2, 2, 2, 2, 2,10, 2,34,34 },
     {34,34, 2, 2, 2, 2, 2, 2, 2, 2, 2,42, 6,44, 2, 2, 2, 2, 2, 2, 2, 2, 2,34,34 },
     {34,34,34,34,34,34,34,34,34,34,34,34, 6,34,34,34,34,34,34,34,34,34,34,34,34 }
   }
@@ -536,43 +564,43 @@ function updateCharacter()
 
 if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) and Character.y > GameHeightMin then
 
-  if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-  if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-  if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-  if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-  if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	
+  if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+  if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+  if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+  if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
+  if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	
 end
 
 if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) and (Character.y + CharacterImage:getHeight()) < GameHeightMax then
 
-  if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-  if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-  if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-  if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y + 5, playerFilter)end
-  if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+  if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+  if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+  if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
+  if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y + 5, playerFilter)end
+  if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
 end
 
 if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) and Character.x > GameWidthMin then
 
-  if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-  if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-  if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-  if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-  if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+  if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+  if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+  if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+  if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
+  if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
 end
 
 if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) and (Character.x + CharacterImage:getWidth()) < GameWidthMax then
 
-  if Village then Character.x, Character.y, colissions, numCollisions = VillageWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-  if Inn then Character.x, Character.y, colissions, numCollisions = InnWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-  if Armory then Character.x, Character.y, colissions, numCollisions = ArmoryWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-  if Home then Character.x, Character.y, colissions, numCollisions = HomeWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-  if Residence then Character.x, Character.y, colissions, numCollisions = ResidenceWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+  if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+  if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+  if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+  if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
+  if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
 end  
 
 
   for i = 1, numCollisions do
-    local other = colissions[i].other
+    local other = collissions[i].other
   
   if tonumber(other) == nil then -- background tiles are represented by numbers (which we are avoiding)
     if other.isVillager then
@@ -606,6 +634,33 @@ function updateOutsideVillagers()
   
     Timer = 0 
   end
+end
+
+function updateInnVillagers()
+
+    local villagerFilter = function(item, other)
+      return 'touch'
+    end
+
+    local villager3 = InnVillagers[3]
+    local villager4 = InnVillagers[4]
+    local numCollisions = 0
+
+    if villager3.x < villager3.sx or villager4.x > villager4.sx then
+      Direction = 1
+    end
+  
+    villager3.x, villager3.y, collissions, numCollisions = InnWorld:move(villager3, villager3.x + (5 * Direction), villager3.y, villagerFilter)
+    villager4.x, villager4.y, collissions, numCollisions = InnWorld:move(villager4, villager4.x - (5 * Direction), villager4.y, villagerFilter)
+  
+    for i = 1, numCollisions do
+      local item = collissions[i].item
+      local other = collissions[i].other
+  
+      if other.isVillager then
+        Direction = Direction * -1
+      end 
+    end
 end
 
 function updateClouds(dt)
@@ -673,15 +728,29 @@ end
 
 function updateFromBuilding()
 
-  if Inn then InnWorld:remove(Character) end
+  if Inn then 
+    InnWorld:remove(Character) 
+    resetVillagers(InnVillagers) 
+  end
+
   if Armory then ArmoryWorld:remove(Character) end
   if Home then HomeWorld:remove(Character) end
   if Residence then ResidenceWorld:remove(Character) end
+
+  resetVillagers(OutsideVillagers)
 
   Village, Inn, Armory, Home, Residence = true, false, false, false, false
 
   Character.x, Character.y = VillagePosition.x, VillagePosition.y + 10 -- Regain Village position and move outside of boundary check
   VillageWorld:add(Character, Character.x, Character.y, CharacterImage:getWidth(), CharacterImage:getHeight())
+end
+
+function resetVillagers(villagers)
+
+  for key, villager in pairs(villagers) do
+    villager.x = villager.sx
+    villager.y = villager.sy
+  end
 end
 
 function updateBumpWorlds()
