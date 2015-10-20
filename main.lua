@@ -73,6 +73,8 @@ function love.update(dt)
     updateClouds(dt)
   end
   
+  updateSunAndMoon()
+
   updateBumpWorlds()
 
   -- Door outside of the Inn
@@ -293,6 +295,13 @@ function loadVillage()
   local cloud3 = {x = 375, y = 15}
   local cloud4 = {x = 575, y = 15}
   Clouds = {cloud1, cloud2, cloud3, cloud4}
+
+  -- Sun and Moon
+  Sun = {x = 75, y = 65, sx, sy, xChange = 0.5, yChange = -0.1}
+  Sun.sx, Sun.sy = Sun.x, Sun.y
+
+  Moon = {x = GameWidthMax - Sun.x, y = Sun.y, sx, sy}
+  Moon.sx, Moon.sy = Moon.x, Moon.y
   
   -- Maps: 
   VillageTable = {
@@ -464,9 +473,10 @@ function drawVillage()
   
   --  Draw the Villagers
   drawObjects(OutsideVillagers, VillagerImage)
-  
+
   --  Draw the Clouds
   drawObjects(Clouds, CloudImage)
+
 end
 
 function drawInn()
@@ -539,7 +549,12 @@ function drawTiledMap(location)
 
     for columnIndex = 1, #row do
       local number = row[columnIndex]
-      love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y)
+          
+        if Village and rowIndex < 3 then
+          drawSunAndMoon()
+        end   
+
+        love.graphics.draw(TilesetImage, Tiles[number], (columnIndex - 1 ) * Tileset.x, (rowIndex - 1) * Tileset.y)
     end
   end  
 end  
@@ -550,6 +565,12 @@ function drawObjects(objects, image)
     love.graphics.draw(image, value.x, value.y)
   end    
 end  
+
+function drawSunAndMoon()
+  
+  love.graphics.draw(SunImage, Sun.x, Sun.y)
+  love.graphics.draw(MoonImage, Moon.x, Moon.y)
+end
 ------------------------
 ---- Love.update() -----
 ------------------------
@@ -751,6 +772,17 @@ function resetVillagers(villagers)
     villager.x = villager.sx
     villager.y = villager.sy
   end
+end
+
+function updateSunAndMoon()
+
+    if (Sun.y < GameHeightMin) then Sun.yChange = -(Sun.yChange) end
+    if Sun.x > (GameWidthMax - Sun.sx) then Sun.xChange = -(Sun.xChange) end
+    if Sun.y > (2 * Sun.sy) then Sun.yChange = -(Sun.yChange) end
+    if Sun.x < Sun.sx then Sun.xChange = -(Sun.xChange) end
+
+    Sun.x, Sun.y = Sun.x + Sun.xChange, Sun.y + Sun.yChange
+    Moon.x, Moon.y = Moon.x - Sun.xChange, Moon.y - Sun.yChange -- Moon is a reflection of the Sun
 end
 
 function updateBumpWorlds()
