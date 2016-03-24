@@ -19,47 +19,35 @@ end
 function love.draw()
 
   if not Menu then
-
-    if Village then
-      drawVillage()	  
-    end  
-
-    if Inn then
-      drawInn()
-    end
-
-    if Armory then
-      drawArmory()
-    end
-
-    if Home then
-      drawHome()
-    end
-
-    if Residence then
-      drawResidence()
-    end
-	
-	if Forest then
-      drawForest()
-    end
-
-    if Dialogue then
-      drawDialogue(CollidedVillager)
-    end
-
-  -- Always draw the Character	 
-  love.graphics.draw(CharacterImage, Character.x, Character.y)	 
   
-  -- Reset the volume outside the Main Menu
-  TownTheme:setVolume(1)
+    -- Starting location
+    if Village then drawVillage() end
+    
+	-- Buildings inside Village
+	if Inn then drawInn() end
+    if Armory then drawArmory() end
+    if Home then drawHome() end
+    if Residence then drawResidence() end
+	
+	-- Outside Village
+	if Forest then drawForest() end
+
+	-- NPC dialogue
+    if Dialogue then drawDialogue(CollidedVillager) end
+
+    -- Always draw the Character	 
+    love.graphics.draw(CharacterImage, Character.x, Character.y)	 
+  
+    -- Reset the volume outside the Main Menu
+    TownTheme:setVolume(1)
 
   else -- Inside the Main Menu
 
     drawMainMenu()
 
-  -- Lower the volume inside the Main Menu
-  TownTheme:setVolume(0.3)
+    -- Lower the volume inside the Main Menu
+    TownTheme:setVolume(0.3)
+	
   end
 end
 
@@ -67,59 +55,56 @@ function love.update(dt)
   Timer = Timer + dt -- Used in NPC movement
   
   updateCharacter()	
-  
-  if Inn then
-    updateInnVillagers()
-  end
 
   if Village then
     updateOutsideVillagers()
     updateClouds(dt)
 	updateSunAndMoon()
   end
+  
+  if Inn then
+    updateInnVillagers()
+  end
+  
+  -- Reserved space for future movement updates in other locations
  
   updateBumpWorlds()
 
+  -- Get rid of the below magic numbers
+  
   -- Door outside of the Inn
   if Village and (Character.x > 380 and Character.x < 390) and (Character.y > 320 and Character.y < 330) then
     updateInn()
-    Dialogue = false
   end
   
   -- Door outside of the Armory
   if Village and (Character.x > 123 and Character.x < 133) and (Character.y > 128 and Character.y < 138) then
     updateArmory()
-    Dialogue = false
   end
   
   -- Door outside of the Home
   if Village and (Character.x > 636 and Character.x < 646) and (Character.y > 128 and Character.y < 138) then
     updateHome()
-    Dialogue = false
   end
   
   -- Door outside of the Residence
   if Village and (Character.x > 732 and Character.x < 742) and (Character.y > 512 and Character.y < 522) then
     updateResidence()
-    Dialogue = false
   end  
   
     -- Pathway to Forest
   if Village and Character.y > 572 then
     updateToForest()
-    Dialogue = false
   end  
   
   -- Pathway from Forest
   if Forest and Character.y < 5 then
 	updateFromForest()
-	Dialogue = false
   end
   
-  -- Door inside building
+  -- Door inside a Village building
   if (not Village and not Forest) and (Character.x > 380 and Character.x < 390) and (Character.y > 560 and Character.y < 570) then
     updateFromBuilding()
-    Dialogue = false
   end
 end
 
@@ -136,6 +121,15 @@ function love.keypressed(key)
   if key == 'q' then
     love.event.quit()
   end
+  
+  if key == 'lshift' then
+	TownTheme:pause()
+  end
+  
+  if key == 'rshift' then
+	TownTheme:play()
+  end
+  
 end
 
 ----------------------
@@ -147,7 +141,7 @@ end
 ------------------------
 function loadGameSettings()
 
-  Village, Inn, Menu, Armory, Home, Residence = true, false, false, false, false, false
+  Village, Inn, Menu, Armory, Home, Residence, Village = true, false, false, false, false, false, false
   Dialogue = false
 
   Direction = 1
@@ -273,6 +267,7 @@ function loadCharacter()
   Character.sx, Character.sy = Character.x, Character.y
 end
 
+-- split into load*Screen*
 function loadVillage()
 
   -- NPCs: Outside
@@ -336,6 +331,7 @@ function loadVillage()
   Moon = {x = GameWidthMax - Sun.x, y = Sun.y, sx, sy}
   Moon.sx, Moon.sy = Moon.x, Moon.y
   
+  -- Move maps
   -- Maps: 
   VillageTable = {
     { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
@@ -654,6 +650,7 @@ function updateCharacter()
     return 'touch'
   end
 
+  -- Below is gross
   if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) and Character.y > GameHeightMin then
 
     if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
@@ -694,16 +691,6 @@ function updateCharacter()
     if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
     if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x + 5, Character.y, playerFilter) end	 
   end  
-
-  -- quick and dirty (sorry) way to pause / play so developers don't lose their mind 
-  if (love.keyboard.isDown('lshift')) then
-	TownTheme:pause()
-  end
-  
-  if (love.keyboard.isDown('rshift')) then
-	TownTheme:play()
-  end
-
 
   for i = 1, numCollisions do
     local other = collissions[i].other
@@ -788,7 +775,10 @@ function updateClouds(dt)
   end
 end
 
+-- No updateVillage? Also. Abstract city.
 function updateInn()
+
+  Dialogue = false -- Close out any dialogue from the previous screen
 
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.x, Character.y = Character.sx, Character.sy -- Move the Character to the bottom of the screen
@@ -801,6 +791,8 @@ end
 
 function updateArmory()
 
+  Dialogue = false -- Close out any dialogue from the previous screen
+
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.x, Character.y = Character.sx, Character.sy -- Move the Character to the bottom of the screen
   
@@ -811,6 +803,8 @@ function updateArmory()
 end
 
 function updateHome()
+
+  Dialogue = false -- Close out any dialogue from the previous screen
 
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.x, Character.y = Character.sx, Character.sy -- Move the Character to the bottom of the screen
@@ -823,6 +817,8 @@ end
 
 function updateResidence()
 
+  Dialogue = false -- Close out any dialogue from the previous screen
+
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.x, Character.y = Character.sx, Character.sy -- Move the Character to the bottom of the screen
   
@@ -833,6 +829,8 @@ function updateResidence()
 end
 
 function updateToForest()
+
+  Dialogue = false -- Close out any dialogue from the previous screen
 
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.y = (GameHeightMax - Character.sy) -- Move the Character to the top of the screen
@@ -845,6 +843,8 @@ end
 
 function updateFromForest()
 
+  Dialogue = false -- Close out any dialogue from the previous screen
+
   Character.y = GameHeightMax - 50 -- Move Character to the bottom of the screen
 
   ForestWorld:remove(Character)
@@ -854,6 +854,8 @@ function updateFromForest()
 end
 
 function updateFromBuilding()
+
+  Dialogue = false -- Close out any dialogue from the previous screen
 
   if Inn then 
     InnWorld:remove(Character) 

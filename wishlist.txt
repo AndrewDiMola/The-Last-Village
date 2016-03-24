@@ -1,0 +1,21 @@
+The Last Village - Wishlist
+
+doors too hard to go through
+npc dialogue boxes
+sun moon eliptical
+weapons
+scrollable screen?
+dialogue auto disappear 3 seconds
+maps to folder
+better cloud spacing
+hero / npc home layout
+monster AI
+night shading
+bookshelves look like stain glass windows
+fullscreen
+health bar
+diagonal half-block transparency
+
+Known Bugs:
+
+bug somewhere for entering Forest (when talking to 3 villagers in clockwise order, from the left)
