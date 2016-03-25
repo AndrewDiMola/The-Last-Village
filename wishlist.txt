@@ -18,4 +18,4 @@ diagonal half-block transparency
 
 Known Bugs:
 
-bug somewhere for entering Forest (when talking to 3 villagers in clockwise order, from the left)
+Character moves in Main Menu

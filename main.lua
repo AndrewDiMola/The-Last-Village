@@ -44,7 +44,11 @@ function love.draw()
   else -- Inside the Main Menu
 
     drawMainMenu()
-
+    
+	-- DEBUG
+	-- love.graphics.print(Character.x, 50, 100)
+	-- love.graphics.print(Character.y, 50, 125)
+	
     -- Lower the volume inside the Main Menu
     TownTheme:setVolume(0.3)
 	
@@ -93,7 +97,7 @@ function love.update(dt)
   end  
   
     -- Pathway to Forest
-  if Village and Character.y > 572 then
+  if Village and Character.y > 560 then
     updateToForest()
   end  
   
@@ -146,6 +150,7 @@ function loadGameSettings()
 
   Direction = 1
 
+  -- I completely forget why I'm starting at 1 -> (Width - 1)
   GameWidthMin = 1
   GameWidthMax = love.graphics.getWidth() - 1
 
@@ -178,6 +183,7 @@ function loadImages()
   SunImage = love.graphics.newImage("images/background/scenery/sun.png")
   MoonImage = love.graphics.newImage("images/background/scenery/moon.png")
   CloudImage = love.graphics.newImage("images/background/scenery/cloud.png")
+  PointerImage = love.graphics.newImage("images/background/menu/pointer.png")
   TilesetImage = love.graphics.newImage("images/tileset.png")
 end
 
@@ -296,11 +302,11 @@ function loadVillage()
   
   -- NPCS: Armory
   local villager1 = {x = 194, y = 227, sx, sy, m = "Welcome to the Weapon Shop...Hey, that was pretty good, right?", isVillager = true}
-  villager1.sx, villager1.sy = villager1.x, villager1.s
+  villager1.sx, villager1.sy = villager1.x, villager1.y
   local villager2 = {x = 578, y = 227, sx, sy, m = "DAMNIT. I hate standing here. We haven't sold anything in years!", isVillager = true}
-  villager2.sx, villager2.sy = villager2.x, villager2.s
+  villager2.sx, villager2.sy = villager2.x, villager2.y
   local villager3 = {x = 388, y = 300, sx, sy, m = "The armory is a family heirloom. I'll never sell it.", isVillager = true}
-  villager3.sx, villager3.sy = villager3.x, villager3.s
+  villager3.sx, villager3.sy = villager3.x, villager3.y
 
   ArmoryVillagers = {villager1, villager2, villager3}
   
@@ -309,11 +315,11 @@ function loadVillage()
   
   -- Forest Monsters
   local monster1 = {x = 194, y = 427, sx, sy, m = "RAWR!!!", isMonster = true}
-  monster1.sx, monster1.sy = monster1.x, monster1.s
+  monster1.sx, monster1.sy = monster1.x, monster1.y
   local monster2 = {x = 578, y = 327, sx, sy, m = "GROWL!!!", isMonster = true}
-  monster2.sx, monster2.sy = monster2.x, monster2.s
+  monster2.sx, monster2.sy = monster2.x, monster2.y
   local monster3 = {x = 388, y = 500, sx, sy, m = "HISS!!!", isMonster = true}
-  monster3.sx, monster3.sy = monster3.x, monster3.s
+  monster3.sx, monster3.sy = monster3.x, monster3.y
   
   ForestMonsters = {monster1, monster2, monster3}
   
@@ -575,6 +581,7 @@ end
 
 function drawMainMenu()
 
+  love.graphics.draw(PointerImage, 300, 300)
   love.graphics.setNewFont(50)
   love.graphics.print("Main Menu", 265, 100)
   love.graphics.setNewFont(25)
@@ -645,7 +652,8 @@ end
 function updateCharacter()
 
   local numCollisions = 0
-
+  local playerMovementIncrement = 5
+  
   local playerFilter = function(item, other)
     return 'touch'
   end
@@ -653,43 +661,43 @@ function updateCharacter()
   -- Below is gross
   if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) and Character.y > GameHeightMin then
 
-    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y - 5, playerFilter) end
-    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	 
-	if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x, Character.y - 5, playerFilter) end	 
+    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end
+    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end
+    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end
+    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end
+    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end	 
+	if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x, Character.y - playerMovementIncrement, playerFilter) end	 
 	
   end
 
   if (love.keyboard.isDown('down') or love.keyboard.isDown('s')) and (Character.y + CharacterImage:getHeight()) < GameHeightMax then
 
-    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y + 5, playerFilter)end
-    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + 5, playerFilter) end
-    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x, Character.y + 5, playerFilter) end	 
+    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter) end
+    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter) end
+    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter) end
+    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter)end
+    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter) end
+    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x, Character.y + playerMovementIncrement, playerFilter) end	 
   end
 
   if (love.keyboard.isDown('left') or love.keyboard.isDown('a')) and Character.x > GameWidthMin then
 
-    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x - 5, Character.y, playerFilter) end
-    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x - 5, Character.y, playerFilter) end	 
+    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end
+    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end
+    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end
+    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end
+    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end
+    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x - playerMovementIncrement, Character.y, playerFilter) end	 
   end
 
   if (love.keyboard.isDown('right') or love.keyboard.isDown('d')) and (Character.x + CharacterImage:getWidth()) < GameWidthMax then
 
-    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x + 5, Character.y, playerFilter) end
-    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x + 5, Character.y, playerFilter) end	 
+    if Village then Character.x, Character.y, collissions, numCollisions = VillageWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end
+    if Inn then Character.x, Character.y, collissions, numCollisions = InnWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end
+    if Armory then Character.x, Character.y, collissions, numCollisions = ArmoryWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end
+    if Home then Character.x, Character.y, collissions, numCollisions = HomeWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end
+    if Residence then Character.x, Character.y, collissions, numCollisions = ResidenceWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end
+    if Forest then Character.x, Character.y, collissions, numCollisions = ForestWorld:move(Character, Character.x + playerMovementIncrement, Character.y, playerFilter) end	 
   end  
 
   for i = 1, numCollisions do
