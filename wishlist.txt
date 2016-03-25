@@ -15,7 +15,8 @@ bookshelves look like stain glass windows
 fullscreen
 health bar
 diagonal half-block transparency
+remove magic numbers / better boundary checking
+overall revamp (lol)
 
 Known Bugs:
 
-Character moves in Main Menu
