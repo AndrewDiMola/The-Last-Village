@@ -1,4 +1,4 @@
 # The-Last-Village
 Lua with Love2D RPG
 
-![simpledemo](https://AndrewDiMola.github.io/The-Last-Village/images/The Last Village Demo.gif)
+![simpledemo](https://raw.githubusercontent.com/AndrewDiMola/The-Last-Village/master/images/The%20Last%20Village%20Demo.gif)
