@@ -266,6 +266,8 @@ end
 function loadAudio()
 
   TownTheme = love.audio.newSource("soundtrack/FF1Town.mp3")
+  BattleTheme = love.audio.newSource("soundtrack/DunkirkBattle.mp3")
+
 
   TownTheme:play()
   TownTheme:setLooping(true)
@@ -877,6 +879,9 @@ function updateToForest()
 
   Dialogue = false -- Close out any dialogue from the previous screen
 
+  TownTheme:stop()
+  BattleTheme:play()
+
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.y = (GameHeightMax - Character.sy) -- Move the Character to the top of the screen
   
@@ -891,6 +896,9 @@ end
 function updateFromForest()
 
   Dialogue = false -- Close out any dialogue from the previous screen
+
+  BattleTheme:stop()
+  TownTheme:play()
 
   Character.y = GameHeightMax - 50 -- Move Character to the bottom of the screen
 
