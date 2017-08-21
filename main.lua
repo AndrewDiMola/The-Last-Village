@@ -132,10 +132,14 @@ function love.keypressed(key)
   
   if key == 'lshift' then
 	TownTheme:pause()
+	BattleTheme:pause()
   end
   
-  if key == 'rshift' then
+  if key == 'rshift' and Village == true then
 	TownTheme:play()
+  end
+  if key == 'rshift' and Forest == true then
+	BattleTheme:play()
   end
   
 end
@@ -627,6 +631,32 @@ function drawDialogue(villager)
   love.graphics.print(villagerMessage, rectangleX + 5, rectangleY) -- Draw dialog
 end  
 
+function removeDialogue(villager)
+
+  local villagerMessage = villager.m
+
+  local rectangleX = villager.x + 30
+  local rectangleY = villager.y - 19
+  local rectangleLineHeight = 18
+
+  local textLineWidth = Font:getWidth(villagerMessage) + 10
+  local textLineHeight = 19
+
+  if textLineWidth + rectangleX > GameWidthMax then
+    rectangleX = rectangleX - (textLineWidth + VillagerImage:getWidth()) - 3
+  end 
+
+  
+  love.graphics.setColor(255,255,255) -- White border
+  love.graphics.rectangle("line", rectangleX, rectangleY, textLineWidth, rectangleLineHeight) -- Rectangle behind dialog
+  
+  love.graphics.setColor(0,0,0) -- Black background
+  love.graphics.rectangle("fill", rectangleX, rectangleY, textLineWidth, rectangleLineHeight)
+  
+  love.graphics.setColor(255,255,255) -- White text
+  love.graphics.print(villagerMessage, rectangleX + 5, rectangleY) -- Draw dialog
+end  
+
 function drawTiledMap(location)
 
   for rowIndex = 1, #location do
@@ -881,6 +911,7 @@ function updateToForest()
 
   TownTheme:stop()
   BattleTheme:play()
+  BattleTheme:setLooping(true)
 
   VillagePosition = {x = Character.x, y = Character.y} -- Preserve Village position
   Character.y = (GameHeightMax - Character.sy) -- Move the Character to the top of the screen
