@@ -1,5 +1,5 @@
 # The-Last-Village
-The Last Village (TLV) is a tile-based role-playing game made with Love2D.
+The Last Village (TLV) is a tile-based role-playing game made with LÖVE.
 
 TLV is programmed in Lua and uses Kikito's [bump.lua framework](https://github.com/kikito/bump.lua).
 
